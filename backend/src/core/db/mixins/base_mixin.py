@@ -8,13 +8,13 @@ from src.core.exception.base_exception import ObjectNotFoundError
 
 TableType = TypeVar('TableType', bound=Base)
 CreateBaseSchema = TypeVar('CreateBaseSchema', bound=BaseModel)
-UpdateBaseScheme = TypeVar('UpdateBaseSchema', bound=BaseModel)
+UpdateBaseSchema = TypeVar('UpdateBaseSchema', bound=BaseModel)
 
 
 class BaseMixin:
     table: TableType = None
     create_schema: CreateBaseSchema | None = None
-    update_schema: UpdateBaseScheme | None = None
+    update_schema: UpdateBaseSchema | None = None
 
     @classmethod
     def unpack_filtered_fields(cls, filter_fields: dict) -> list:

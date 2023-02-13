@@ -14,3 +14,13 @@ class BaseError(Exception):
 class ObjectNotFoundError(BaseError):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "Not found"
+
+
+class AuthenticationError(BaseError):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    default_detail = 'Invalid credentials provided'
+    default_headers = ({'WWW-Authenticate': 'Bearer'},)
+
+
+class InvalidTokenError(BaseError):
+    default_detail = 'The token is already used or invalud'

@@ -10,4 +10,4 @@ class ListMixin(BaseMixin):
         objects = await session.execute(
             select(cls.table)
         )
-        return objects.scalar().all()
+        return objects.scalars().all()
