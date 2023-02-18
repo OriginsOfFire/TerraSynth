@@ -10,6 +10,7 @@ class User(BaseModel):
     email = Column(String(128), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
     full_name = Column(String(64), nullable=False)
+    configurations = relationship('Configuration', back_populates='user')
 
     def __str__(self):
         return self.email
