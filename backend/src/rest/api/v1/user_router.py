@@ -20,6 +20,13 @@ async def get_user(
     return res
 
 
+@user_router.get('/user', response_model=list[UserSchema])
+async def get_users(
+        session: AsyncSession = Depends(get_session)
+):
+    return await UserManager.list(session=session)
+
+
 @user_router.post('/user/', response_model=UserSchema)
 async def create_user(input_data: UserCreateSchema, session: AsyncSession = Depends(get_session)):
     return await UserManager.create(input_data=input_data, session=session)

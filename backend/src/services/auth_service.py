@@ -5,10 +5,11 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 from src.core import settings
 from src.core.db.db import get_session
-from src.core.exception.base_exception import AuthenticationError, InvalidTokenError
+from src.core.exception.base_exception import AuthenticationError, InvalidTokenError, ObjectNotFoundError
 from src.core.managers.user_manager import UserManager
 from src.core.utils import verify_password
 from src.models import User
@@ -34,10 +35,12 @@ class AuthService:
             password: str,
             session: AsyncSession = Depends(get_session),
     ) -> bool | User:
-        user = await UserManager.retrieve(session, email=email)
-        if not user:
+        try:
+            user = await UserManager.retrieve(session, email=email)
+        except ObjectNotFoundError:
             return False
-        if not await verify_password(password, user.password):
+
+        if not verify_password(password, user.password):
             return False
         return user
 
@@ -50,7 +53,7 @@ class AuthService:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
             email: str = payload.get('sub')
             if email is None:
-                raise AuthenticationError
+                raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail='Invalid credentials provided')
         except (JWTError, KeyError):
             raise InvalidTokenError
         user = await UserManager.retrieve(email=email, session=session)
