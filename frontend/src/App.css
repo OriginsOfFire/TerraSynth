@@ -1,0 +1,34 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+html {
+  background-color: #fffffe;
+}
+
+body {
+  height: 100%;
+  background: #fffffe; /* fallback for old browsers */
+}
+
+#root {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+header.start {
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-text {
+    font-family: "Courier New";
+}
+
+form {
+    display: block;
+}
