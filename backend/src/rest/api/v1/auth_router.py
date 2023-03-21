@@ -1,8 +1,9 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 from src.core import settings
 from src.core.db.db import get_session
@@ -24,11 +25,10 @@ async def get_access_token(
         session=session
     )
     if not user:
-        raise AuthenticationError
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail='Invalid credentials provided')
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await AuthService.create_access_token(
         data={'sub': user.email}, expires_delta=access_token_expires
     )
-    print(access_token)
     return Token(access_token=access_token, token_type='bearer')
 
