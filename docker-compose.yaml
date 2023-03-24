@@ -1,24 +1,24 @@
 version: "3.9"
 
 services:
-  db:
-    image: postgres:15.1
+  postgres:
+    image: postgres:15.1-alpine
     volumes:
       - ./data/postgres:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     env_file:
-      - backend/.env
+      - accounts/.env
 
-  backend:
+  accounts:
     build:
-      context: backend
+      context: accounts
       dockerfile: ./build/Dockerfile
     volumes:
-      - ./backend:/backend
+      - ./accounts:/backend
     ports:
       - "8000:8000"
     env_file:
-      - backend/.env
+      - accounts/.env
     depends_on:
-      - db
+      - postgres
