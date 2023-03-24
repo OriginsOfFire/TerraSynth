@@ -7,7 +7,6 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 
 from src.core import settings
 from src.core.db.db import get_session
-from src.core.exception.base_exception import AuthenticationError
 from src.rest.schemas.auth_schema import Token
 from src.services.auth_service import AuthService
 
@@ -24,8 +23,6 @@ async def get_access_token(
         password=form_data.password,
         session=session
     )
-    if not user:
-        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail='Invalid credentials provided')
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await AuthService.create_access_token(
         data={'sub': user.email}, expires_delta=access_token_expires
