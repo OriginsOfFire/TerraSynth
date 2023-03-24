@@ -19,3 +19,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+from src.core.error_handlers import * # noqa
