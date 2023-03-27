@@ -8,17 +8,17 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - accounts/.env
+      - ./backend/accounts/.env
 
   accounts:
     build:
-      context: accounts
+      context: ./backend/accounts/
       dockerfile: ./build/Dockerfile
     volumes:
-      - ./accounts:/backend
+      - ./backend/accounts:/app
     ports:
       - "8000:8000"
     env_file:
-      - accounts/.env
+      - ./backend/accounts/.env
     depends_on:
       - postgres

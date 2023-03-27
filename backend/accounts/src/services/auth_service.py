@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core import settings
 from src.core.db.db import get_session
-from src.core.exception.base_exception import WrongCredentialsError, InvalidTokenError
+from src.core.exception.base_exception import WrongCredentialsError
 from src.core.managers.user_manager import UserManager
 from src.core.utils import verify_password, decode_token
 from src.models import User
