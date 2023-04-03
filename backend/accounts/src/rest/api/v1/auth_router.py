@@ -1,9 +1,8 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Request, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.status import HTTP_401_UNAUTHORIZED
 
 from src.core import settings
 from src.core.db.db import get_session
