@@ -12,3 +12,5 @@ class Configuration(BaseModel):
 
     user_id = mapped_column(ForeignKey('users.id'))
     user = relationship('User', back_populates='configurations', lazy='joined')
+    provider_id = mapped_column(ForeignKey('providers.id'))
+    provider = relationship('Provider', back_populates='configurations', lazy='joined')
