@@ -20,4 +20,4 @@ class ConfigurationUpdateSchema(ConfigurationBaseSchema):
 class ConfigurationSchema(ConfigurationBaseSchema, BaseSchema):
     class Config:
         orm_mode = True
-        fields = {'user': {'exclude': True}}
+        fields = {"user": {"exclude": True}}

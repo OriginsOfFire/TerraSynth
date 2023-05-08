@@ -6,7 +6,9 @@ from src.models import User
 
 class CreateMixin(BaseMixin):
     @classmethod
-    async def create(cls, input_data: CreateBaseSchema, session: AsyncSession) -> TableType:
+    async def create(
+        cls, input_data: CreateBaseSchema, session: AsyncSession
+    ) -> TableType:
         obj = cls.table(**input_data.__dict__)
         session.add(obj)
 

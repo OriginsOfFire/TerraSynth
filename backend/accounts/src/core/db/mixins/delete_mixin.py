@@ -10,10 +10,7 @@ class DeleteMixin(BaseMixin):
     async def delete(cls, session: AsyncSession, **kwargs) -> dict | HTTPException:
         filter_fields = cls.unpack_filtered_fields(kwargs)
 
-        await session.execute(
-            delete(cls.table).
-            where(and_(True, *filter_fields))
-        )
+        await session.execute(delete(cls.table).where(and_(True, *filter_fields)))
         await session.commit()
 
-        return {'status': 200}
+        return {"status": 200}
