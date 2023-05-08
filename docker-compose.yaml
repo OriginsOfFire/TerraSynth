@@ -22,3 +22,25 @@ services:
       - ./backend/accounts/.env
     depends_on:
       - postgres
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./backend/configurations/.env
+    volumes:
+      - ./backend/mongo_data:/data/db
+
+  configurations:
+    build:
+      context: ./backend/configurations/
+      dockerfile: ./build/Dockerfile
+    volumes:
+      - ./backend/configurations:/app
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./backend/configurations/.env
+    depends_on:
+      - mongo

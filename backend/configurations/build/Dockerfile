@@ -1,10 +1,15 @@
-FROM golang:1.20-alpine
+FROM python:3.10.2-slim-buster
 
-WORKDIR /backend
+WORKDIR /app
 
-COPY . .
+RUN apt-get update && apt-get install -y netcat
 
-RUN go build -o ./server
-RUN ls
-EXPOSE 8000
-ENTRYPOINT ["./server"]
+COPY ./Pipfile ./Pipfile.lock /app/
+RUN pip install pipenv
+RUN pipenv install --system --deploy --ignore-pipfile
+
+COPY . /app/
+
+RUN chmod +x /app/build/entrypoint.sh
+
+ENTRYPOINT ["sh", "/app/build/entrypoint.sh"]
