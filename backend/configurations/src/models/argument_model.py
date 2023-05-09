@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from src.core.enum import DataTypeEnum
+from src.core.enums import DataTypeEnum
 
 
 class BasicAttrModel(BaseModel):

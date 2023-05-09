@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.rest.api.v1.router import api_v1_router
+from src.rest.api.router import base_router
 
 app = FastAPI()
-app.include_router(api_v1_router)
+app.include_router(base_router)
