@@ -21,14 +21,24 @@ body {
 }
 
 header.start {
+  height: 25px;
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+header.start a {
+   margin-left: 50px;
 }
 
 .welcome-text {
-    font-family: "Courier New";
+    font-family: "Noto Sans CJK TC", sans-serif
 }
 
 form {
     display: block;
+}
+
+header {
+    background-color: #d1d1e9;
 }
