@@ -9,10 +9,12 @@ function Footer() {
                           sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#d1d1e9' }}>
             <BottomNavigationAction
                 href="https://github.com/OriginsOfFire/TerraSynth"
+                target="_blank"
                 icon={<GitHubIcon/>}>
             </BottomNavigationAction>
             <BottomNavigationAction
                 href="https://t.me/originsOfFire"
+                target="_blank"
                 icon={<TelegramIcon/>}>
             </BottomNavigationAction>
         </BottomNavigation>

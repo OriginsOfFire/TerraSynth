@@ -4,7 +4,9 @@ import React from 'react';
 function Header() {
     return (
         <header className='start'>
-            <h2 className='welcome-text'>Welcome to TerraSynth!</h2>
+            <a href="/">Home</a>
+            <a href="/configurations">Configurations</a>
+            <a href="/me">Me</a>
         </header>
     );
 }
