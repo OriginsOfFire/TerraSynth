@@ -4,12 +4,14 @@ from src.rest.schemas.base_schema import BaseSchema
 
 class ConfigurationBaseSchema(BaseSchema):
     id: int | None
+    name: str | None
     user_id: int | None
     cloud_type: CloudTypeEnum | None
 
 
 class ConfigurationCreateSchema(ConfigurationBaseSchema):
     user_id: int
+    name: str
     cloud_type: CloudTypeEnum
 
 
