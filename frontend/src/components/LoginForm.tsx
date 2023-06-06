@@ -35,6 +35,7 @@ function LoginForm() {
             flexDirection: 'column',
             alignItems: 'center',
           }}>
+            <h2>Welcome! Please authorize</h2>
             <form onSubmit={handleSubmit}>
                 <TextField
                   margin="normal"
@@ -70,6 +71,7 @@ function LoginForm() {
                   Sign In
                 </Button>
             </form>
+             <a href="/signup">Don't have an account? Sign up</a>
         </Box>
     );
 }
