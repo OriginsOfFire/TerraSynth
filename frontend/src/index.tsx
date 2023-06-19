@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Configurations from "./components/Configurations";
 import Header from "./components/Header";
@@ -18,11 +17,11 @@ root.render(
       <BrowserRouter>
           <Header />
           <Routes>
-              <Route index element={<App />} />
               <Route path="login" element={<LoginForm />} />
               <Route path="configurations" element={<Configurations/>}/>
               <Route path="signup" element={<SignUpForm />} />
               <Route path="providers" element={<Providers/>} />
+              <Route path="*" element={<Navigate to="configurations" replace />} />
           </Routes>
           <Footer />
       </BrowserRouter>

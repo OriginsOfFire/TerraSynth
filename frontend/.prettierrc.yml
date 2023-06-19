@@ -1,0 +1,16 @@
+# For details see https://prettier.io/docs/en/options.html
+
+# see also ".editorconfig"
+useTabs: false # indent_style = space
+tabWidth: 2 # indent_size = 2
+
+singleQuote: true
+semi: true
+printWidth: 100
+endOfLine: lf
+#quoteProps: as-needed
+#bracketSpacing: true
+#jsxBracketSameLine: false
+#trailingComma: es5
+#arrowParens: always
+
