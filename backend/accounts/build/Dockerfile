@@ -4,8 +4,8 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y netcat
 
-COPY ./Pipfile ./Pipfile.lock /app/
 RUN pip install pipenv
+COPY ./Pipfile ./Pipfile.lock /app/
 RUN pipenv install --system --deploy --ignore-pipfile
 
 COPY . /app/

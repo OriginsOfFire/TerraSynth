@@ -19,7 +19,7 @@ function LoginForm() {
         })
         localStorage.setItem('token', token.data.access_token)
         const user: IUser = await axios.get(
-            "http://localhost:8000/api/v1/user/me",
+            "http://localhost:8000/api/v1/users/me",
             {headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}}
         )
         localStorage.setItem("user", JSON.stringify(user));
@@ -35,6 +35,7 @@ function LoginForm() {
             flexDirection: 'column',
             alignItems: 'center',
           }}>
+            <h2>Welcome! Please authorize</h2>
             <form onSubmit={handleSubmit}>
                 <TextField
                   margin="normal"
@@ -70,6 +71,7 @@ function LoginForm() {
                   Sign In
                 </Button>
             </form>
+             <a href="/signup">Don't have an account? Sign up</a>
         </Box>
     );
 }

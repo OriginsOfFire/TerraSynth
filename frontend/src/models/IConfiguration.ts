@@ -1,3 +1,5 @@
 export interface IConfiguration {
-    id: string;
+    id: number;
+    name: string;
+    provider: string;
 }

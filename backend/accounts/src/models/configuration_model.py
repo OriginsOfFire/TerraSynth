@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Enum, ForeignKey
+from sqlalchemy import Column, String, Enum, ForeignKey
 from sqlalchemy.orm import relationship, mapped_column
 
 from src.core.enums import CloudTypeEnum
@@ -12,5 +12,6 @@ class Configuration(BaseModel):
 
     user_id = mapped_column(ForeignKey("users.id"))
     user = relationship("User", back_populates="configurations", lazy="joined")
+    name = Column(String(32), nullable=False)
     provider_id = mapped_column(ForeignKey("providers.id"))
     provider = relationship("Provider", back_populates="configurations", lazy="joined")

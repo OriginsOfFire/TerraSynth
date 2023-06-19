@@ -11,7 +11,7 @@ from src.services.auth_service import AuthService
 user_router = APIRouter(tags=["users"])
 
 
-@user_router.get("/user/me", response_model=UserSchema)
+@user_router.get("/users/me", response_model=UserSchema)
 async def get_user(
     user=Depends(AuthService.get_current_user),
     session: AsyncSession = Depends(get_session),
@@ -20,12 +20,12 @@ async def get_user(
     return res
 
 
-@user_router.get("/user", response_model=list[UserSchema])
+@user_router.get("/users", response_model=list[UserSchema])
 async def get_users(session: AsyncSession = Depends(get_session)):
     return await UserManager.list(session=session)
 
 
-@user_router.post("/user/", response_model=UserSchema)
+@user_router.post("/users/", response_model=UserSchema)
 async def create_user(
     input_data: UserCreateSchema, session: AsyncSession = Depends(get_session)
 ):

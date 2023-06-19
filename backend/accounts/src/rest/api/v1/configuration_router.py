@@ -1,8 +1,11 @@
-from http import HTTPStatus
+import json
 
-from fastapi import APIRouter, Depends, HTTPException
+import aio_pika
+from aio_pika import Message
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
+from starlette.responses import JSONResponse
 
 from src.core.db.db import get_session
 from src.core.managers.configuration_manager import ConfigurationManager
@@ -16,18 +19,18 @@ from src.services.auth_service import AuthService
 configuration_router = APIRouter(tags=["configurations"])
 
 
-@configuration_router.get("/configuration")
+@configuration_router.get("/configurations")
 async def get_configurations(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(AuthService.get_current_user),
-) -> list:
+) -> list[ConfigurationSchema]:
     return await ConfigurationManager.list(
         session=session, filter_fields={"user_id": user.id}
     )
 
 
 @configuration_router.post(
-    "/configuration/",
+    "/configurations/",
     status_code=status.HTTP_201_CREATED,
     response_model=ConfigurationSchema,
 )
@@ -42,11 +45,19 @@ async def create_configuration(
 
 
 @configuration_router.delete(
-    "/configuration/{config_id}", status_code=status.HTTP_200_OK
+    "/configurations/{config_id}", status_code=status.HTTP_200_OK
 )
 async def delete_configuration(
     config_id: int,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(AuthService.get_current_user),
 ):
+    connection = await aio_pika.connect("amqp://rabbitmq")
+    channel = await connection.channel()
+    await channel.declare_queue("configurations")
+    await channel.default_exchange.publish(
+        Message(json.dumps({"configuration_id": config_id}).encode("utf-8")),
+        routing_key="configurations"
+    )
+    await connection.close()
     return await ConfigurationManager.delete(session=session, id=config_id)
