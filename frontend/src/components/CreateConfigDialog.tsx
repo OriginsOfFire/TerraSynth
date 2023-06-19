@@ -12,12 +12,11 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import axios from 'axios';
-import { IConfiguration } from '../models/IConfiguration';
 
 interface CreateConfigDialogProps {
   open: boolean;
   handleClose: () => void;
-  updateConfigurations: (value: IConfiguration) => void;
+  updateConfigurations: () => void;
 }
 
 export const CreateConfigDialog = ({
@@ -45,10 +44,10 @@ export const CreateConfigDialog = ({
       name,
       cloud_type: cloud,
     };
-    const response = await axios.post('http://localhost:8000/api/v1/configurations/', data, {
+    await axios.post('http://localhost:8000/api/v1/configurations/', data, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    updateConfigurations(response.data);
+    updateConfigurations();
     handleClose();
   };
 

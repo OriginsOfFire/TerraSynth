@@ -10,6 +10,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack,
   TextField,
   Toolbar,
   Typography,
@@ -19,6 +20,8 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import { IResource } from '../models/IResource';
+import AddIcon from '@mui/icons-material/Add';
 
 interface ConfigInfoDialogProps {
   open: boolean;
@@ -33,9 +36,13 @@ export const ConfigInfoDialog = ({
   id,
   updateConfigurations,
 }: ConfigInfoDialogProps) => {
-  const [resources, setResources] = useState<string[]>([]);
+  const [resources, setResources] = useState<IResource[]>([]);
   const [name, setName] = useState<string>('');
   const [cloud, setCloud] = React.useState<string>('');
+  const [providerId, setProviderId] = useState<number | undefined>();
+  const [availableResourses, setAvailableResourses] = useState<IResource[]>([]);
+
+  console.log(providerId, availableResourses);
 
   const handleCloudChange = async (e: SelectChangeEvent) => {
     setCloud(e.target.value as string);
@@ -48,6 +55,7 @@ export const ConfigInfoDialog = ({
       });
       setName(response.data.name);
       setCloud(response.data.cloud_type);
+      setProviderId(response.data.provider_id);
     };
 
     const fetchResourses = async () => {
@@ -63,6 +71,20 @@ export const ConfigInfoDialog = ({
     fetchData();
     fetchResourses();
   }, [id]);
+
+  useEffect(() => {
+    const fetchAvailableResourses = async () => {
+      const response = await axios.get(
+        `http://localhost:8001/api/v1/resources/?provider_id=${providerId}}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
+      setAvailableResourses(response.data);
+    };
+
+    providerId && fetchAvailableResourses();
+  }, [providerId]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const user = JSON.parse(localStorage.getItem('user') as string);
@@ -108,65 +130,80 @@ export const ConfigInfoDialog = ({
           </Button>
         </Toolbar>
       </AppBar>
-      <List sx={{ width: 3 / 4, margin: 'auto', marginTop: 0 }}>
-        <ListItem>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="name"
-            fullWidth
-            variant="standard"
-            value={name}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-          />
-        </ListItem>
-        <ListItem>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={cloud}
-            onChange={handleCloudChange}
-            displayEmpty
-            required
-            sx={{
-              width: '100%',
-            }}
-          >
-            <MenuItem>Choose provider...</MenuItem>
-            <MenuItem value="AWS">Amazon Web Services</MenuItem>
-            <MenuItem value="AZURE">Microsoft Azure</MenuItem>
-            <MenuItem value="GCP">Google Cloud Platform</MenuItem>
-          </Select>
-        </ListItem>
-
-        <ListItem>
+      <Stack sx={{ width: '90%', margin: 'auto', marginTop: 3 }} gap={3}>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Name"
+          type="name"
+          fullWidth
+          variant="standard"
+          value={name}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+        />
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={cloud}
+          onChange={handleCloudChange}
+          displayEmpty
+          required
+          sx={{
+            width: '100%',
+          }}
+        >
+          <MenuItem>Choose provider...</MenuItem>
+          <MenuItem value="AWS">Amazon Web Services</MenuItem>
+          <MenuItem value="AZURE">Microsoft Azure</MenuItem>
+          <MenuItem value="GCP">Google Cloud Platform</MenuItem>
+        </Select>
+        <Stack gap={2} alignItems={'flex-start'}>
           <h3> Resources: </h3>
-        </ListItem>
-        <ListItem>
+
           {resources.length ? (
-            resources.map((r) => {
-              return (
-                <>
-                  {/* <ListItem>
-                <ListItemText primary={r.split(' ')[0]} secondary={r.split(' ')[1]} />
-                <IconButton>
-                  <EditIcon />
-                </IconButton>
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
-              </ListItem>
-              <Divider /> */}
-                </>
-              );
-            })
+            <List sx={{ width: '100%' }}>
+              {resources.map((res: IResource) => {
+                return (
+                  <ListItem
+                    className="configuration"
+                    key={res.name}
+                    sx={{
+                      backgroundColor: 'rgba(233, 222, 245, 0.4);',
+                      borderRadius: 1,
+                      mt: 1,
+                    }}
+                    secondaryAction={
+                      <>
+                        <IconButton>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    }
+                  >
+                    <ListItemText primary={res.name} secondary={res.data_type} />
+                  </ListItem>
+                );
+              })}
+            </List>
           ) : (
             <div> No resources yet</div>
           )}
-        </ListItem>
-      </List>
+          <Button
+            variant="contained"
+            sx={{
+              ':hover': { backgroundColor: '#a46ed9' },
+              backgroundColor: '#8a4fc4',
+            }}
+            endIcon={<AddIcon />}
+          >
+            Add Resource
+          </Button>
+        </Stack>
+      </Stack>
     </Dialog>
   );
 };
