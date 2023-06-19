@@ -1,11 +1,13 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
   const handleLogout = () => {
     if (localStorage.getItem('token')) {
       localStorage.clear();
+      navigate('/login');
     }
   };
   return (
