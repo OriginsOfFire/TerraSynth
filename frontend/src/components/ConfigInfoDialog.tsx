@@ -22,6 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { IResource } from '../models/IResource';
 import AddIcon from '@mui/icons-material/Add';
+import { ResourceDialog } from './ResourceDialog';
 
 interface ConfigInfoDialogProps {
   open: boolean;
@@ -39,14 +40,24 @@ export const ConfigInfoDialog = ({
   const [resources, setResources] = useState<IResource[]>([]);
   const [name, setName] = useState<string>('');
   const [cloud, setCloud] = React.useState<string>('');
-  const [providerId, setProviderId] = useState<number | undefined>();
+  const [providerId, setProviderId] = useState<number>(1);
   const [availableResourses, setAvailableResourses] = useState<IResource[]>([]);
+  const [openResource, setOpenResource] = useState(false);
 
   console.log(providerId, availableResourses);
 
   const handleCloudChange = async (e: SelectChangeEvent) => {
     setCloud(e.target.value as string);
   };
+
+  // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   const resId = +e.currentTarget.id;
+  //   await axios.delete(`http://localhost:8000/api/v1/configurations/${configId}`, {
+  //     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+  //   });
+  //   const newConfigurations = configurations.filter((n) => n.id !== configId);
+  //   setConfigurations(newConfigurations);
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +66,6 @@ export const ConfigInfoDialog = ({
       });
       setName(response.data.name);
       setCloud(response.data.cloud_type);
-      setProviderId(response.data.provider_id);
     };
 
     const fetchResourses = async () => {
@@ -75,7 +85,7 @@ export const ConfigInfoDialog = ({
   useEffect(() => {
     const fetchAvailableResourses = async () => {
       const response = await axios.get(
-        `http://localhost:8001/api/v1/resources/?provider_id=${providerId}}`,
+        `http://localhost:8001/api/v1/resources/?provider_id=${providerId}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
@@ -97,6 +107,17 @@ export const ConfigInfoDialog = ({
     await axios.put(`http://localhost:8000/api/v1/configurations/${id}`, data, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    const res_data = resources.map((res) => ({
+      resource_id: res._id,
+      name: res.name,
+      configuration_id: id,
+      arguments: res.arguments,
+    }));
+    axios.post(`http://localhost:8001/api/v1/resources/initialize`, res_data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
     handleClose();
     updateConfigurations();
   };
@@ -192,18 +213,55 @@ export const ConfigInfoDialog = ({
           ) : (
             <div> No resources yet</div>
           )}
-          <Button
+          {/* <Button
             variant="contained"
             sx={{
               ':hover': { backgroundColor: '#a46ed9' },
               backgroundColor: '#8a4fc4',
             }}
             endIcon={<AddIcon />}
+            onClick={() => setOpenResource(true)}
           >
             Add Resource
-          </Button>
+          </Button> */}
+        </Stack>
+        <Stack>
+          <h3> Available Resources: </h3>
+
+          <List sx={{ width: '100%' }}>
+            {availableResourses.length ? (
+              availableResourses.map((res: IResource) => {
+                return (
+                  <ListItem
+                    className="configuration"
+                    key={res.name}
+                    sx={{
+                      backgroundColor: 'rgba(233, 222, 245, 0.4);',
+                      borderRadius: 1,
+                      mt: 1,
+                    }}
+                    secondaryAction={
+                      <IconButton onClick={() => setResources((resources) => [...resources, res])}>
+                        <AddIcon />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemText
+                      primary={res.name}
+                      secondary={res.arguments.map((arg) => arg.name).join(', ')}
+                    />
+                  </ListItem>
+                );
+              })
+            ) : (
+              <div> No resources yet</div>
+            )}
+          </List>
         </Stack>
       </Stack>
+      {/* {openResource && (
+        <ResourceDialog open={openResource} handleClose={() => setOpenResource(false)} />
+      )} */}
     </Dialog>
   );
 };

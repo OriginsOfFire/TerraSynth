@@ -38,7 +38,7 @@ async def initialize_resource(
     response = []
     for r in data:
         init_resource = await ResourceService.initialize_resource(data=r, db=db)
-        init_resource["_id"] = encode_object_id(init_resource["_id"])["$oid"]
+        # init_resource["_id"] = encode_object_id(init_resource["_id"])["$oid"]
         response.append(init_resource)
     return JSONResponse(status_code=201, content=response)
 
@@ -51,8 +51,8 @@ async def get_initialized_resources(
     init_resources = await ResourceService.get_initialized_resources(
         configuration_id=configuration_id, db=db
     )
-    for resource in init_resources:
-        resource["_id"] = encode_object_id(resource["_id"])["$oid"]
+    # for resource in init_resources:
+    #     resource["_id"] = encode_object_id(resource["_id"])["$oid"]
     return JSONResponse(status_code=200, content=init_resources)
 
 
