@@ -23,3 +23,7 @@ class ConfigurationSchema(ConfigurationBaseSchema, BaseSchema):
     class Config:
         orm_mode = True
         fields = {"user": {"exclude": True}}
+
+
+class ConfigurationsDeleteSchema(BaseSchema):
+    ids: list[str]

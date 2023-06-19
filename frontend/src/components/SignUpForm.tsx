@@ -2,10 +2,25 @@ import React from "react";
 import {Box, Button, TextField} from "@mui/material";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {IUser} from "../models/IUser";
 
 function SignUpForm() {
     const navigator = useNavigate();
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const response = await axios.post('http://localhost:8000/api/v1/user/', {
+            'email': data.get('email'),
+            'password': data.get('password'),
+            'full_name': data.get('full_name')
+        },{
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        navigator("/login")
+    };
+
     return (
         <Box
             sx={{
@@ -16,7 +31,7 @@ function SignUpForm() {
                 alignItems: 'center',
             }}>
             <h3>Fill the following fields to complete your signup:</h3>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <TextField
                     margin="normal"
                     required

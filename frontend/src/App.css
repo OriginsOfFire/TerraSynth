@@ -20,13 +20,6 @@ body {
     flex-direction: column;
 }
 
-header.start {
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 header.start a {
    margin-left: 50px;
 }

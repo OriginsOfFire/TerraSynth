@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {IProvider} from "../models/IProvider";
+import ConfigInfo from "./ConfigInfo";
 
 const Providers = () => {
     const [providers, setProviders] = useState([]);
@@ -10,7 +11,7 @@ const Providers = () => {
     useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get(
-                "http://localhost:8001/api/v1/providers",
+                "http://localhost:8000/api/v1/providers",
                 {headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}}
             );
             setProviders(response.data);
@@ -30,6 +31,7 @@ const Providers = () => {
                     )
                 })}
             </ul>
+            <ConfigInfo/>
         </div>
     );
 };
