@@ -9,5 +9,5 @@ class ProviderSchema(BaseModel):
 
 
 class ProviderCreateSchema(BaseModel):
-    abbreviation: CloudTypeEnum
+    name: CloudTypeEnum
     provider_name: str

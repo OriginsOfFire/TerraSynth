@@ -43,16 +43,16 @@ async def get_configuration(
 @configuration_router.post(
     "/configurations/",
     status_code=status.HTTP_201_CREATED,
-    response_model=ConfigurationCreateSchema,
+    response_model=ConfigurationSchema,
 )
 async def create_configuration(
-    input_data: ConfigurationCreateSchema,
+    input_data: ConfigurationSchema,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(AuthService.get_current_user),
 ):
     input_data.user_id = user.id
-    provider = await ProviderManager.retrieve(session=session, name=input_data.cloud_type.value)
-    input_data.provider_id = provider.id
+    # provider = await ProviderManager.retrieve(session=session, name=input_data.cloud_type.value)
+    # input_data.provider_id = provider.id
     return await ConfigurationManager.create(input_data=input_data, session=session)
 
 
