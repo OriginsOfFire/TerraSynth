@@ -24,6 +24,7 @@ class ConfigurationUpdateSchema(BaseModel):
 
 
 class ConfigurationSchema(ConfigurationBaseSchema, BaseSchema):
+
     class Config:
         orm_mode = True
         fields = {"user": {"exclude": True}}
