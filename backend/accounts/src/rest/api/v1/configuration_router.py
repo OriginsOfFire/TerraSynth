@@ -43,7 +43,7 @@ async def get_configuration(
 @configuration_router.post(
     "/configurations/",
     status_code=status.HTTP_201_CREATED,
-    response_model=ConfigurationSchema,
+    response_model=ConfigurationCreateSchema,
 )
 async def create_configuration(
     input_data: ConfigurationCreateSchema,

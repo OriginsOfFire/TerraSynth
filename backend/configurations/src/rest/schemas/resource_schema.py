@@ -5,7 +5,7 @@ from src.models.base_model import BaseMongoModel
 
 
 class ResourceSchema(BaseMongoModel):
-    provider_id: str
+    provider_id: int
     name: str
     arguments: list[ArgumentModel]
     attributes: list[AttributeModel]

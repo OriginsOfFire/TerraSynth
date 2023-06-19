@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.rest.schemas.provider_schema import ProviderSchema
+from src.rest.schemas.provider_schema import ProviderSchema, ProviderCreateSchema
 
 from src.core.managers.provider_manager import ProviderManager
 
@@ -21,3 +21,10 @@ async def get_providers(
 ):
     return await ProviderManager.list(session=session)
 
+
+@provider_router.post("/providers")
+async def create_provider(
+    input_data: ProviderCreateSchema,
+    session: AsyncSession = Depends(get_session),
+):
+    return await ProviderManager.create(input_data=input_data, session=session)

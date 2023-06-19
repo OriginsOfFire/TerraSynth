@@ -17,8 +17,8 @@ resource_router = APIRouter(prefix="/resources")
 
 
 @resource_router.get("/", response_model=list[Resource])
-async def get_resources(length: int = 10, db: AsyncIOMotorDatabase = Depends(get_db)):
-    resources = await ResourceService.get_resources(length=length, db=db)
+async def get_resources(provider_id: int, db: AsyncIOMotorDatabase = Depends(get_db)):
+    resources = await ResourceService.get_resources(length=10, db=db)
     for r in resources:
         r["_id"] = encode_object_id(r["_id"])["$oid"]
     return JSONResponse(status_code=200, content=resources)
@@ -29,7 +29,7 @@ async def add_resource(
     data: ResourceSchema, db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     resource = await ResourceService.add_resource(data=data, db=db)
-    resource["_id"] = encode_object_id(resource["_id"])["$oid"]
+    # resource["_id"] = encode_object_id(resource["_id"])["$oid"]
     return JSONResponse(status_code=201, content=resource)
 
 
