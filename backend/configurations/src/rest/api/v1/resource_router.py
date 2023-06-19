@@ -33,11 +33,14 @@ async def add_resource(
 
 @resource_router.post("/initialize", response_model=InitResource)
 async def initialize_resource(
-    data: InitResourceSchema, db: AsyncIOMotorDatabase = Depends(get_db)
+    data: list[InitResourceSchema], db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    init_resource = await ResourceService.initialize_resource(data=data, db=db)
-    init_resource["_id"] = encode_object_id(init_resource["_id"])["$oid"]
-    return JSONResponse(status_code=201, content=init_resource)
+    response = []
+    for r in data:
+        init_resource = await ResourceService.initialize_resource(data=r, db=db)
+        init_resource["_id"] = encode_object_id(init_resource["_id"])["$oid"]
+        response.append(init_resource)
+    return JSONResponse(status_code=201, content=response)
 
 
 @resource_router.get("/initialize", response_model=list[InitResource])
