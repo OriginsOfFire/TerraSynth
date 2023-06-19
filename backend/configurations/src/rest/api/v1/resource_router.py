@@ -18,9 +18,7 @@ resource_router = APIRouter(prefix="/resources")
 
 @resource_router.get("/", response_model=list[Resource])
 async def get_resources(provider_id: int, db: AsyncIOMotorDatabase = Depends(get_db)):
-    resources = await ResourceService.get_resources(length=10, db=db)
-    for r in resources:
-        r["_id"] = encode_object_id(r["_id"])["$oid"]
+    resources = await ResourceService.get_resources(provider_id=provider_id, length=10, db=db)
     return JSONResponse(status_code=200, content=resources)
 
 
@@ -54,6 +52,13 @@ async def get_initialized_resources(
         resource["_id"] = encode_object_id(resource["_id"])["$oid"]
     return JSONResponse(status_code=200, content=init_resources)
 
+
+@resource_router.get("/initialize", response_model=InitResource)
+async def get_initialized_resource(
+    resource_id: str,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    resource = await ResourceService.retrieve_resource(resource_id=resource_id, db=db)
 
 @resource_router.post("/process-message")
 async def process_message(message: dict, db: AsyncIOMotorDatabase = Depends(get_db)):

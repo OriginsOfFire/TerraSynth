@@ -7,8 +7,8 @@ from src.rest.schemas.resource_schema import ResourceSchema, InitResourceSchema
 
 class ResourceService:
     @staticmethod
-    async def get_resources(length: int, db: AsyncIOMotorDatabase) -> list[dict]:
-        return await db["resources"].find().to_list(length=length)
+    async def get_resources(provider_id: int, length: int, db: AsyncIOMotorDatabase) -> list[dict]:
+        return await db["resources"].find({"provider_id": provider_id}).to_list(length=length)
 
     @staticmethod
     async def add_resource(data: ResourceSchema, db: AsyncIOMotorDatabase) -> dict:
@@ -16,6 +16,10 @@ class ResourceService:
         new_resource = await db["resources"].insert_one(data)
         resource = await db["resources"].find_one({"_id": new_resource.inserted_id})
         return resource
+
+    @staticmethod
+    async def retrieve_resource(resource_id: str, db: AsyncIOMotorDatabase):
+        return await db["resources"].find_one({"_id": resource_id})
 
     @staticmethod
     async def initialize_resource(data: InitResourceSchema, db: AsyncIOMotorDatabase) -> dict:
