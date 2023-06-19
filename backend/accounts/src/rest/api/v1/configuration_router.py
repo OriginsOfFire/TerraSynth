@@ -29,6 +29,15 @@ async def get_configurations(
     )
 
 
+@configuration_router.get("/configurations/{config_id}")
+async def get_configuration(
+    config_id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(AuthService.get_current_user)
+) -> ConfigurationSchema:
+    return await ConfigurationManager.retrieve(session=session, id=config_id)
+
+
 @configuration_router.post(
     "/configurations/",
     status_code=status.HTTP_201_CREATED,
