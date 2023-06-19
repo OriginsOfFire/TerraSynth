@@ -110,11 +110,13 @@ function Configurations() {
           Add Configuration
         </Button>
 
-        <CreateConfigDialog
-          open={open}
-          handleClose={() => setOpen(false)}
-          updateConfigurations={updateConfigurations}
-        />
+        {open && (
+          <CreateConfigDialog
+            open={open}
+            handleClose={() => setOpen(false)}
+            updateConfigurations={updateConfigurations}
+          />
+        )}
         {!!selectedId && (
           <ConfigInfoDialog
             open={!!selectedId}
