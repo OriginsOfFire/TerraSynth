@@ -1,6 +1,10 @@
+import io
+import os.path
+import zipfile
+
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response, StreamingResponse, FileResponse
 
 from src.core.db.db import get_db
 from src.core.utils import encode_object_id
@@ -64,15 +68,34 @@ async def generate_code(
         config_id: int,
         db: AsyncIOMotorDatabase = Depends(get_db)
 ):
+    root_module = 'terraform {\n required_version = ">= 1.0"\n}\n'
     resources = await ResourceService.get_initialized_resources(
         configuration_id=config_id, db=db
     )
-    result_strings = []
+    filenames = ["./user3/main.tf"]
+    if not os.path.exists("./user3"):
+        os.mkdir("./user3")
+
     for r in resources:
+        module_def = f'module "{r["name"]}" {{\n'
+        module_def += f'\tsource = "./modules/{r["name"]}"\n'
+        module_def += "}\n"
+        root_module += module_def
         s = "resource {} {{\n".format(r["name"])
-        print(r)
         for argument in r["arguments"]:
             s += "\t{} = {}\n".format(argument["name"], argument["value"])
         s += "}"
-        result_strings.append(s)
-    return result_strings
+        filename = f"./user3/{r['name']}/main.tf"
+        filenames.append(filename)
+        if not os.path.exists(f'./user3/{r["name"]}'):
+            os.mkdir(f'./user3/{r["name"]}')
+        with open(filename, "w+") as file:
+            file.write(s)
+    with open(f"./user3/main.tf", "w+") as file:
+        file.write(root_module)
+    print(filenames)
+    archive_name = "./tfcode"
+    import shutil
+    file = shutil.make_archive(archive_name, 'zip', "./user3")
+    resp = FileResponse(file, media_type="application/x-zip-compressed")
+    return resp

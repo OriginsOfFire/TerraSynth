@@ -11,7 +11,7 @@ class UpdateMixin(BaseMixin):
         cls, pk: int, update_data: UpdateBaseSchema, session: AsyncSession
     ) -> TableType | HTTPException:
         await session.execute(
-            update(cls.table).where(cls.table.id == pk).values(**update_data)
+            update(cls.table).where(cls.table.id == pk).values(**update_data.__dict__)
         )
         await session.commit()
 

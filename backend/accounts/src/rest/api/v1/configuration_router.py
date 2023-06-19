@@ -12,7 +12,7 @@ from src.core.managers.configuration_manager import ConfigurationManager
 from src.models import User
 from src.rest.schemas.configuration_schema import (
     ConfigurationCreateSchema,
-    ConfigurationSchema,
+    ConfigurationSchema, ConfigurationUpdateSchema,
 )
 from src.services.auth_service import AuthService
 
@@ -39,9 +39,21 @@ async def create_configuration(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(AuthService.get_current_user),
 ):
-    input_data.id = user.id
+    input_data.user_id = user.id
 
     return await ConfigurationManager.create(input_data=input_data, session=session)
+
+
+@configuration_router.put(
+    "/configurations/{config_id}", status_code=status.HTTP_200_OK, response_model=ConfigurationSchema
+)
+async def update_configuration(
+    config_id: int,
+    input_data: ConfigurationUpdateSchema,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(AuthService.get_current_user),
+):
+    return await ConfigurationManager.update(update_data=input_data, session=session, pk=config_id)
 
 
 @configuration_router.delete(

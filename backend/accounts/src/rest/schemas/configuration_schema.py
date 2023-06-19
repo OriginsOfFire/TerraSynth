@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 from src.core.enums import CloudTypeEnum
 from src.rest.schemas.base_schema import BaseSchema
 
@@ -15,8 +17,9 @@ class ConfigurationCreateSchema(ConfigurationBaseSchema):
     cloud_type: CloudTypeEnum
 
 
-class ConfigurationUpdateSchema(ConfigurationBaseSchema):
-    pass
+class ConfigurationUpdateSchema(BaseModel):
+    name: str | None
+    cloud_type: CloudTypeEnum | None
 
 
 class ConfigurationSchema(ConfigurationBaseSchema, BaseSchema):
