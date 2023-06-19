@@ -20,8 +20,9 @@ import AddIcon from '@mui/icons-material/Add';
 function Configurations() {
     const navigator = useNavigate();
     const [configurations, setConfigurations] = useState<IConfiguration[]>([])
-    const [open, setOpen] = useState(false)
-    const [cloud, setCloud] = useState("")
+    const [open, setOpen] = useState(false);
+    const [name, setName] = useState("");
+    const [cloud, setCloud] = useState("");
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -56,9 +57,39 @@ function Configurations() {
         setConfigurations(newConfigurations);
     }
 
-    const handleChange = async (e: SelectChangeEvent) => {
+    const handleCloudChange = async (e: SelectChangeEvent) => {
         setCloud(e.target.value as string);
     }
+
+    const handleNameChange = async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setName(e.currentTarget.value);
+        console.log(e.currentTarget.value);
+    }
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        const user = JSON.parse(localStorage.getItem("user") as string);
+        const token = localStorage.getItem("token")
+        const data = {
+            user_id: user.data.id,
+            name,
+            cloud_type: cloud,
+        }
+        console.log(data);
+        const response = await axios.post(
+            "http://localhost:8000/api/v1/configurations/",
+            data,
+            {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+        configurations.push(response.data)
+        setOpen(false);
+    }
+
+    const handleDownload = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        const configId = +e.currentTarget.id;
+        await axios.get(`http://localhost:8001/api/v1/resources/generate/${configId}`);
+    }
+
+
     if (!localStorage.getItem("token")) {
         return <Navigate to="/login"/>;
     } else {
@@ -76,7 +107,7 @@ function Configurations() {
                                 <IconButton id={c.id.toString()} onClick={handleDelete}>
                                     <DeleteIcon/>
                                 </IconButton>
-                                <IconButton>
+                                <IconButton id={c.id.toString()} onClick={handleDownload}>
                                     <CloudDownloadIcon/>
                                 </IconButton>
                             </li>
@@ -101,13 +132,14 @@ function Configurations() {
                             type="name"
                             fullWidth
                             variant="standard"
+                            onChange={handleNameChange}
                         />
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Age"
                             value={cloud}
-                            onChange={handleChange}
+                            onChange={handleCloudChange}
                         >
                             <MenuItem value="AWS">Amazon Web Services</MenuItem>
                             <MenuItem value="AZURE">Microsoft Azure</MenuItem>
@@ -116,7 +148,7 @@ function Configurations() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleClose}>Create</Button>
+                        <Button onClick={handleSubmit}>Create</Button>
                     </DialogActions>
                 </Dialog>
             </div>

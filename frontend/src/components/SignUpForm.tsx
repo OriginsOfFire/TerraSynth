@@ -9,7 +9,7 @@ function SignUpForm() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const response = await axios.post('http://localhost:8000/api/v1/user/', {
+        const response = await axios.post('http://localhost:8000/api/v1/users/', {
             'email': data.get('email'),
             'password': data.get('password'),
             'full_name': data.get('full_name')
