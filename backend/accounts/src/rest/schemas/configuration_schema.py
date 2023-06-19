@@ -9,6 +9,7 @@ class ConfigurationBaseSchema(BaseSchema):
     name: str | None
     user_id: int | None
     cloud_type: CloudTypeEnum | None
+    provider_id: int | None
 
 
 class ConfigurationCreateSchema(ConfigurationBaseSchema):

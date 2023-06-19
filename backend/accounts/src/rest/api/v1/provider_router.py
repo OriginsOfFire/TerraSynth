@@ -20,3 +20,4 @@ async def get_providers(
         user: User = Depends(AuthService.get_current_user)
 ):
     return await ProviderManager.list(session=session)
+

@@ -9,6 +9,8 @@ from starlette.responses import JSONResponse
 
 from src.core.db.db import get_session
 from src.core.managers.configuration_manager import ConfigurationManager
+
+from src.core.managers.provider_manager import ProviderManager
 from src.models import User
 from src.rest.schemas.configuration_schema import (
     ConfigurationCreateSchema,
@@ -49,7 +51,8 @@ async def create_configuration(
     user: User = Depends(AuthService.get_current_user),
 ):
     input_data.user_id = user.id
-
+    provider = await ProviderManager.retrieve(session=session, name=input_data.cloud_type.value)
+    input_data.provider_id = provider.id
     return await ConfigurationManager.create(input_data=input_data, session=session)
 
 
